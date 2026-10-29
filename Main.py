@@ -1,3 +1,4 @@
+import os
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.window import Window
@@ -9,12 +10,14 @@ spark = SparkSession.builder \
 
 
 def load_table(table_name):
+    db_password = os.getenv("DB_PASSWORD", "postgres") 
+    
     return spark.read \
         .format("jdbc") \
         .option("url", "jdbc:postgresql://localhost:5435/postgres") \
         .option("dbtable", table_name) \
         .option("user", "postgres") \
-        .option("password", "postgres") \
+        .option("password", db_password) \
         .option("driver", "org.postgresql.Driver") \
         .load()
 
